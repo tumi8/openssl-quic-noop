@@ -1253,6 +1253,13 @@ int tls_construct_client_hello(SSL *s, WPACKET *pkt)
         return 0;
     }
 
+    const char* ciphersuite_name = getenv("CIPHER_SUITE");
+    if (ciphersuite_name != NULL) {
+        if (SSL_set_ciphersuites(s, ciphersuite_name) == 0) {
+            return 0;
+        }
+    }
+
     if (!ssl_cipher_list_to_bytes(s, SSL_get_ciphers(s), pkt)) {
         /* SSLfatal() already called */
         return 0;

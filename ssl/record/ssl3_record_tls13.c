@@ -107,6 +107,8 @@ int tls13_enc(SSL *s, SSL3_RECORD *recs, size_t n_recs, int sending)
         taglen = EVP_GCM_TLS_TAG_LEN;
     } else if (alg_enc & SSL_CHACHA20) {
         taglen = EVP_CHACHAPOLY_TLS_TAG_LEN;
+    } else if (alg_enc & SSL_NOOP) {
+        taglen = EVP_NOOP_TLS_TAG_LEN;
     } else {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS13_ENC,
                  ERR_R_INTERNAL_ERROR);

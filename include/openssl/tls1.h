@@ -616,6 +616,7 @@ __owur int SSL_check_chain(SSL *s, X509 *x, EVP_PKEY *pk, STACK_OF(X509) *chain)
 # define TLS1_3_CK_CHACHA20_POLY1305_SHA256               0x03001303
 # define TLS1_3_CK_AES_128_CCM_SHA256                     0x03001304
 # define TLS1_3_CK_AES_128_CCM_8_SHA256                   0x03001305
+# define TLS1_3_CK_NOOP_SHA256                            0x03004242
 
 /* Aria ciphersuites from RFC6209 */
 # define TLS1_CK_RSA_WITH_ARIA_128_GCM_SHA256             0x0300C050

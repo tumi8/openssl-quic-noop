@@ -393,6 +393,9 @@ typedef struct {
 /* Length of tag for TLS */
 # define EVP_CHACHAPOLY_TLS_TAG_LEN                      16
 
+/* Length of tag for TLS */
+# define EVP_NOOP_TLS_TAG_LEN                            16
+
 typedef struct evp_cipher_info_st {
     const EVP_CIPHER *cipher;
     unsigned char iv[EVP_MAX_IV_LENGTH];
@@ -921,6 +924,7 @@ const EVP_CIPHER *EVP_chacha20(void);
 const EVP_CIPHER *EVP_chacha20_poly1305(void);
 #  endif
 # endif
+const EVP_CIPHER *EVP_noop(void);
 
 # ifndef OPENSSL_NO_SEED
 const EVP_CIPHER *EVP_seed_ecb(void);

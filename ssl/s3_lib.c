@@ -111,6 +111,21 @@ static SSL_CIPHER tls13_ciphers[] = {
         SSL_HANDSHAKE_MAC_SHA256,
         128,
         128,
+    }, {
+        1,
+        "TLS_NOOP_SHA256",
+        "TLS_NOOP_SHA256",
+        TLS1_3_CK_NOOP_SHA256,
+        SSL_kANY,
+        SSL_aANY,
+        SSL_NOOP,
+        SSL_AEAD,
+        TLS1_3_VERSION, TLS1_3_VERSION,
+        0, 0,
+        SSL_HIGH,
+        SSL_HANDSHAKE_MAC_SHA256,
+        256,
+        256,
     }
 };
 

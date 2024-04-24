@@ -43,7 +43,8 @@
 #define SSL_ENC_CHACHA_IDX      19
 #define SSL_ENC_ARIA128GCM_IDX  20
 #define SSL_ENC_ARIA256GCM_IDX  21
-#define SSL_ENC_NUM_IDX         22
+#define SSL_ENC_NOOP_IDX        22
+#define SSL_ENC_NUM_IDX         23
 
 /* NB: make sure indices in these tables match values above */
 
@@ -76,6 +77,7 @@ static const ssl_cipher_table ssl_cipher_table_cipher[SSL_ENC_NUM_IDX] = {
     {SSL_CHACHA20POLY1305, NID_chacha20_poly1305}, /* SSL_ENC_CHACHA_IDX 19 */
     {SSL_ARIA128GCM, NID_aria_128_gcm}, /* SSL_ENC_ARIA128GCM_IDX 20 */
     {SSL_ARIA256GCM, NID_aria_256_gcm}, /* SSL_ENC_ARIA256GCM_IDX 21 */
+    {SSL_NOOP, 42424242}, /* SSL_ENC_NOOP_IDX 22 */
 };
 
 static const EVP_CIPHER *ssl_cipher_methods[SSL_ENC_NUM_IDX];
@@ -365,7 +367,12 @@ int ssl_load_ciphers(void)
         if (t->nid == NID_undef) {
             ssl_cipher_methods[i] = NULL;
         } else {
-            const EVP_CIPHER *cipher = EVP_get_cipherbynid(t->nid);
+            const EVP_CIPHER *cipher;
+            if (t->mask == SSL_NOOP) {
+                cipher = EVP_noop();
+            } else {
+                cipher = EVP_get_cipherbynid(t->nid);
+            }
             ssl_cipher_methods[i] = cipher;
             if (cipher == NULL)
                 disabled_enc_mask |= t->mask;
@@ -1791,6 +1798,9 @@ char *SSL_CIPHER_description(const SSL_CIPHER *cipher, char *buf, int len)
     case SSL_CHACHA20POLY1305:
         enc = "CHACHA20/POLY1305(256)";
         break;
+    case SSL_NOOP:
+        enc = "NOOP";
+        break;
     default:
         enc = "unknown";
         break;
@@ -2116,6 +2126,8 @@ int ssl_cipher_get_overhead(const SSL_CIPHER *c, size_t *mac_overhead,
     } else if (c->algorithm_enc & (SSL_AES128CCM8 | SSL_AES256CCM8)) {
         out = EVP_CCM_TLS_EXPLICIT_IV_LEN + 8;
     } else if (c->algorithm_enc & SSL_CHACHA20POLY1305) {
+        out = 16;
+    } else if (c->algorithm_enc & SSL_NOOP) {
         out = 16;
     } else if (c->algorithm_mac & SSL_AEAD) {
         /* We're supposed to have handled all the AEAD modes above */
